@@ -63,7 +63,7 @@ class Ball {
             float speed = velocity.lengthSquared();
             float dragMagnitude = l.c * speed * speed;
             ofPoint drag = velocity;
-            drag *= -0.25;
+            drag *= -1;
             drag.normalize();
             drag *= dragMagnitude;
             applyForce(drag);

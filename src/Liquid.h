@@ -5,7 +5,7 @@ class Liquid {
         double x,y,w,h;
         double c;
 
-        Liquid(double _x = 0, double _y = 0, double _w = 0, double _h = 0, double _c = 0) {
+        Liquid(double _x = 0, double _y = 0, double _w = 0, double _h = 0, double _c = 0.5) {
             x = _x;
             y = _y;
             w = _w;

@@ -38,7 +38,7 @@ class ofApp : public ofBaseApp{
 
         vector<Ball> balls;
         vector<ofPoint> forces;
-        ofPoint gravity{0, 0.1};
+        ofPoint gravity{0, 0.5};
 
         vector<Liquid> liquids;
 };

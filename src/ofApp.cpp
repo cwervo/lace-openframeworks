@@ -20,23 +20,49 @@ void ofApp::setup(){
 
     ofEnableAlphaBlending();
 
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 1000; ++i) {
         ofPoint loc{ofRandomWidth(), ofRandomHeight()};
-        Ball b = Ball(loc, 1 + 0.25 * i);
+        Ball b = Ball(loc, fmod(1 + 0.1 * i, 5));
         b.color = ofColor(255 * b.mass, 0, 255 * 0.5 * b.mass);
         balls.push_back(b);
     }
 
     // wind
     forces.push_back(ofPoint{0.01, 0});
-
-    liquids.push_back(Liquid{0, double(ofGetHeight()/2), double(ofGetWidth()), double(ofGetHeight()/2), 0.1});
 }
 
 
 //--------------------------------------------------------------
 void ofApp::update(){
     vidGrabber.update();
+
+    // liquids.push_back(Liquid{0, double(ofGetHeight()/2), double(ofGetWidth()), double(ofGetHeight()/2), 0.1});
+
+
+    // change background video alpha value based on the cursor's x-position
+    float videoAlphaValue = ofMap(mouseX, 0, ofGetWidth(), 0, 255);
+
+    // set a white fill color with the alpha generated above
+    ofSetColor(255,255,255,videoAlphaValue);
+
+    // draw the raw video frame with the alpha value generated above
+    vidGrabber.draw(0,0);
+
+    ofPixelsRef pixelsRef = vidGrabber.getPixels();
+
+    ofSetHexColor(0xffffff);
+
+    for (int i = 0; i < camWidth; i+= 7){
+        for (int j = 0; j < camHeight; j+= 9){
+            float lightness = pixelsRef.getColor(i,j).getLightness();
+            int character = powf( ofMap(lightness, 0, 255, 0, 1), 2.5) * asciiCharacters.size();
+            if (character > asciiCharacters.size() * 0.25) {
+                liquids.push_back(Liquid{double(i), double(j), 10, 10});
+            }
+        }
+    }
+
+
     for (Ball &b : balls) {
         for (auto f : forces) {
             b.applyForce(f);
@@ -54,7 +80,6 @@ void ofApp::update(){
         friction.normalize();
         friction *= frictionMag;
         b.applyForce(friction);
-
 
         for (Liquid l : liquids) {
             if (b.isInside(l)) {
@@ -114,6 +139,8 @@ void ofApp::draw(){
     for (Liquid l : liquids) {
         l.draw();
     }
+
+    liquids.clear();
 }
 
 
